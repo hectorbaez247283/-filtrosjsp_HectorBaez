@@ -6,10 +6,14 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import dominio.Pokemon;
+import jakarta.servlet.RequestDispatcher;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,31 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RegistroPokemon extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RegistroPokemon</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RegistroPokemon at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
+    private static List<Pokemon> pokemones = new ArrayList<>();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -55,7 +35,26 @@ public class RegistroPokemon extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Recoger los datos del formulario
+        String nombre = request.getParameter("nombre");
+        String numero = request.getParameter("numero");
+        String tipo = request.getParameter("tipo");
+        String evolucion = request.getParameter("evolucion");
+        int poder = Integer.parseInt(request.getParameter("poder"));
+        String descripcion = request.getParameter("descripcion");
+
+        // Crear un nuevo objeto Pokémon
+        Pokemon pokemon = new Pokemon(nombre, numero, tipo, evolucion, poder, descripcion);
+        
+        // Agregar el Pokémon a la lista
+        pokemones.add(pokemon);
+
+        // Enviar la lista de Pokémons a Home.jsp
+        request.setAttribute("listaPokemones", pokemones);
+        
+        // Redirigir a Home.jsp
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Home.jsp");
+        dispatcher.forward(request, response);
     }
 
     /**
@@ -69,7 +68,7 @@ public class RegistroPokemon extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**
